@@ -4,6 +4,7 @@ import fs from "fs";
 import {promisify} from 'util';
 import { printChildren } from "./util";
 import assert, { AssertionError } from "assert";
+import path from 'path';
 
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
@@ -33,7 +34,6 @@ type Args = {
 function parseArgs(rawArgs: ts.NodeArray<ts.Expression>, rootDecl: ts.MethodDeclaration | ts.ClassDeclaration): Args {
     assert(rawArgs.length <= 1, "Too many arguments provided to @microservice()");
     const argsObj = rawArgs[0] as ts.ObjectLiteralExpression | undefined;
-    if(argsObj) console.log('argsObj: ', ts.SyntaxKind[argsObj.kind]);
     if(rawArgs.length === 1) assert(argsObj && ts.isObjectLiteralExpression(argsObj), "Only argument for @microservice() should be an object containing options");
     function getVal(key: string) : string | undefined {
         if(argsObj) {
@@ -51,6 +51,18 @@ function parseArgs(rawArgs: ts.NodeArray<ts.Expression>, rootDecl: ts.MethodDecl
     return {
         service: getVal('serviceName') ?? rootDecl.name!.getText(),
     };
+}
+
+function generateName(nameIn: string, serviceName: string) {
+    nameIn = path.resolve(nameIn);
+    const dot = nameIn.lastIndexOf('.');
+    const slash = nameIn.lastIndexOf('/');
+    assert(slash < dot);
+    const [fullPath, extension] = [nameIn.slice(0, dot), nameIn.slice(dot)];
+    const [parentDir, fileName] = [fullPath.slice(0, slash), fullPath.slice(slash)];
+    const nameOut =  parentDir + "/generated" + fileName + "_" + _.kebabCase(serviceName) + extension;
+    const newDirectory = parentDir + "/generated";
+    return [nameOut, newDirectory];
 }
 
 function mapToGrpc(rootDecl: ts.MethodDeclaration | ts.ClassDeclaration) {
@@ -123,11 +135,10 @@ async function partitionFiles(rootDecl: ts.MethodDeclaration | ts.ClassDeclarati
             fileToText.set(node.getSourceFile().fileName, fileText);
         }
         let textSegment = node.getText();
+        // TODO: figure out the different prefix patterns from tsconfig.json (not just ".")
         if(ts.isStringLiteral(node) && ts.isImportDeclaration(node.parent) && ['.'].some(s => node.getText().slice(1).startsWith(s))) {
             const isSameFolder = textSegment.match(/^['"]\.\/[^./'"]+['"]$/);
-            console.log('found case');
             const newText = textSegment.replace(/(?<=\/)([^/]+)(?=['"])/, `${isSameFolder ? '' : 'generated/'}$1_${args.service}`);
-            console.log('newText: ', newText);
             fileText[node.getStart()] = newText;
             for(let i = node.getStart()+1; i < node.getEnd(); i++) fileText[i] = ''; // fill with empty
         } else {
@@ -138,11 +149,10 @@ async function partitionFiles(rootDecl: ts.MethodDeclaration | ts.ClassDeclarati
     }
     const promises = [];
     for(const [fileName, fileText] of fileToText) {
-        const dir = fileName.replace(fileRegex, 'generated/');
-        const newPath = fileName.replace(fileRegex, `generated/$1_${args.service}.$2`);
+        const [newFile, newDirectory] = generateName(fileName, args.service);
         promises.push((async () => {
-            if(!await exists(dir)) await mkdir(dir, { recursive: true });
-            await writeFile(newPath, fileText.join('').replaceAll(/\n +(?=\n)/g, '\n'));
+            if(!await exists(newDirectory)) await mkdir(newDirectory, { recursive: true });
+            await writeFile(newFile, fileText.join('').replaceAll(/\n +(?=\n)/g, '\n'));
         })());
     }
     await Promise.all(promises);
