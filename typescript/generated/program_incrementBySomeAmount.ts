@@ -1,5 +1,5 @@
 import { microservice } from 'starburst';
-import { Args, WriterService } from './otherfile';
+import { Args, WriterService } from './otherfile_incrementBySomeAmount';
 
 interface Thing {
     yo: 123
@@ -20,9 +20,9 @@ class MyStuff {
     }
 }
 
-async function main() {
-    await new Promise(r => setTimeout(r, 2000)); // wait 2 seconds
-    const ret = new MyStuff().incrementBySomeAmount({num:5});  // do RPC
-    console.log(ret);                            // print result
-}
-main();
+
+
+
+
+
+
