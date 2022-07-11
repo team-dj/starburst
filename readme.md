@@ -18,7 +18,7 @@ Starburst aims to make microservices as easy to build as a monolithic applicatio
 Here's a bare-bones example with two microservices: a booking service (typescript), and a payment service (python3), which are requested by a main program (go). Normally, this would trigger you to jump into action and open up those brilliant [proto3](https://developers.google.com/protocol-buffers/docs/proto3) docs! But with Starburst, it's as easy as Import, Decorate, Call. Take a look:
 
 ```py3
-from starburst import microservices
+import starburst
 
 class PaymentResponse:
     success: bool
