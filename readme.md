@@ -10,7 +10,7 @@ Why microservices? [microservices.com](https://microservices.com) cites 3 reason
 
 [I personally don't agree with the 2nd reason](docs/opinions/org-flexibility.md), however, the remaining two points do hold some merit; microservices make it easier to **ship code in smaller chunks** (which also leads to faster deployments) and microservices let your organization's engineers work with technologies across **many different languages** (i.e. "the right tool for the job").
 
-Starburst aims to make microservices as easy to build as a monolithic application, with the multi-language support and small deployments that makes microservices so great.
+Starburst aims to make microservices as easy to build as a monolithic application, with the multi-language support and small deployments that make microservices so great.
 
 
 ## Envisioned Usage:
