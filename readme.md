@@ -71,7 +71,7 @@ If you put this all together, you're ready for deployment -- `starburst deploy` 
 
 ## High-level roadmap
 
-However... we're still a long way to finishing this. Since Starburst needs to locate these decorators in your code, it needs to hook into compiler & type-checker APIs for each language that it supports. So keep an eye out for us!
+However... we're still a long way to finishing this. Since Starburst needs to locate these decorators in your code, it needs to hook into compiler & type-checker APIs for each language that it supports. We're also very busy students/interns. So keep an eye out for us!
 
 - [ ] Typescript support (end of July)
 - [ ] CLI (end of August)
