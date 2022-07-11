@@ -48,4 +48,4 @@ One might argue that having RPCs divding your codebase means that less testing i
 
 ## what about deployments?
   
-Well... you got me there. Microservices **do make deployments better** (a.k.a. smaller), which I suppose can have an organizational benefit, but I don't really consider this to be organizational flexibility. In my eyes this is more of a operations advantage, which should be considered in its own category since it's irrelevant to how a team is structured.
+Well... you got me there. Microservices **do make deployments better** (a.k.a. smaller), which I suppose can have an organizational benefit, but I don't really consider this to be organizational flexibility. In my eyes this is more of an operations advantage, which should be considered in its own category since it's irrelevant to how a team is structured.
