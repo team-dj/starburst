@@ -36,7 +36,7 @@ message HelloReply {
 }
 ```
 
-The non-RPC version could be called as a regular-old-function by another team's code within the monolith. It still serves its purpose as an interface, because boundaries are clearly mentioned ("This is maintained by <Greeting Team>.").
+The non-RPC version could be called as a regular-old-function by another team's code within the monolith. It still serves its purpose as an interface, because boundaries are clearly mentioned ("This is maintained by `<Greeting Team>`.").
 
 ## what about testing?
   
